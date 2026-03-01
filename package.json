@@ -1,5 +1,5 @@
 {
-  "name": "react-example",
+  "name": "pay-mind-v2",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,7 +12,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@capacitor-community/sqlite": "^8.0.0",
+    "@capacitor-community/sqlite": "^7.0.3",
     "@capacitor/android": "^7.0.0",
     "@capacitor/cli": "^7.0.0",
     "@capacitor/core": "^7.0.0",
