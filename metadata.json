@@ -1,0 +1,5 @@
+{
+  "name": "PayMind",
+  "description": "Um gerenciador financeiro pessoal para controle de contas e vencimentos.",
+  "requestFramePermissions": []
+}
