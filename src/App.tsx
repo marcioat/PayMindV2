@@ -3,6 +3,7 @@ import { Plus, Home, Bolt, Wifi, CreditCard, Droplets, ArrowLeft, TrendingUp, Ch
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from './utils';
 import { Bill, BillStatus, HistoryItem } from './types';
+import { dbService } from './services/db';
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   'Aluguel': <Home className="size-6" />,
@@ -52,29 +53,18 @@ export default function App() {
     fetchHistory();
   }, []);
 
-  const fetchBills = async () => {
-    try {
-      const res = await fetch('/api/bills');
-      const data = await res.json();
-      setBills(data);
-    } catch (err) {
-      console.error('Error fetching bills:', err);
-    } finally {
-      setLoading(false);
-    }
+  const fetchBills = () => {
+    const data = dbService.getBills();
+    setBills(data);
+    setLoading(false);
   };
 
-  const fetchHistory = async () => {
-    try {
-      const res = await fetch('/api/history');
-      const data = await res.json();
-      setHistory(data);
-    } catch (err) {
-      console.error('Error fetching history:', err);
-    }
+  const fetchHistory = () => {
+    const data = dbService.getHistory();
+    setHistory(data);
   };
 
-  const handleSave = async (e: React.FormEvent) => {
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     const newBill = {
       ...formData,
@@ -83,83 +73,41 @@ export default function App() {
       status: 'Pendente' as BillStatus,
     };
 
-    try {
-      const res = await fetch('/api/bills', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newBill),
-      });
-      if (res.ok) {
-        fetchBills();
-        setView('list');
-        setFormData({ name: '', amount: '', dueDate: '', notes: '', category: 'Outros' });
-      }
-    } catch (err) {
-      console.error('Error saving bill:', err);
-    }
+    dbService.saveBill(newBill);
+    fetchBills();
+    setView('list');
+    setFormData({ name: '', amount: '', dueDate: '', notes: '', category: 'Outros' });
   };
 
-  const toggleStatus = async (bill: Bill) => {
+  const toggleStatus = (bill: Bill) => {
     if (bill.status === 'Pago') {
-      // If already paid, toggle back to pending
-      try {
-        await fetch(`/api/bills/${bill.id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'Pendente', paidAt: null }),
-        });
-        fetchBills();
-      } catch (err) {
-        console.error('Error updating status:', err);
-      }
+      dbService.updateBill(bill.id, { status: 'Pendente', paidAt: undefined });
+      fetchBills();
     } else {
-      // Open modal to confirm payment
       setSelectedBill(bill);
       setPaymentDay(new Date().getDate().toString());
     }
   };
 
-  const confirmPayment = async () => {
+  const confirmPayment = () => {
     if (!selectedBill) return;
-    try {
-      const res = await fetch(`/api/bills/${selectedBill.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          status: 'Pago', 
-          paidAt: paymentDay 
-        }),
-      });
-      if (res.ok) {
-        await fetchBills();
-        await fetchHistory();
-        setSelectedBill(null);
-      }
-    } catch (err) {
-      console.error('Error confirming payment:', err);
-    }
+    dbService.updateBill(selectedBill.id, { 
+      status: 'Pago', 
+      paidAt: paymentDay 
+    });
+    fetchBills();
+    fetchHistory();
+    setSelectedBill(null);
   };
 
-  const deleteBill = async (id: number) => {
-    try {
-      await fetch(`/api/bills/${id}`, { method: 'DELETE' });
-      fetchBills();
-    } catch (err) {
-      console.error('Error deleting bill:', err);
-    }
+  const deleteBill = (id: number) => {
+    dbService.deleteBill(id);
+    fetchBills();
   };
 
-  const handleReset = async () => {
-    console.log('Reset button clicked!');
-    try {
-      const res = await fetch('/api/bills/reset', { method: 'POST' });
-      if (res.ok) {
-        console.log('Reset successful, fetching bills...');
-        await fetchBills();
-      }
-    } catch (err) {
-      console.error('Error resetting bills:', err);
-    }
+  const handleReset = () => {
+    dbService.resetBills();
+    fetchBills();
   };
 
   const filteredBills = bills.filter(b => {
