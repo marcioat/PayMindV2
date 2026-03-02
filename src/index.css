@@ -11,13 +11,24 @@
 }
 
 @layer base {
+  :root {
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+    --safe-right: env(safe-area-inset-right);
+  }
+
+  html {
+    font-size: 12px;
+  }
+
   body {
     @apply bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-sans;
-    /* Prevent content from being hidden under safe areas */
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    /* Prevent content from being hidden under safe areas; add extra fallback padding */
+    padding-top: calc(var(--safe-top, 0px) + 0.75rem);
+    padding-bottom: calc(var(--safe-bottom, 0px) + 1.5rem);
+    padding-left: calc(var(--safe-left, 0px) + 0.5rem);
+    padding-right: calc(var(--safe-right, 0px) + 0.5rem);
   }
 }
 

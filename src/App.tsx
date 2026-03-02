@@ -6,6 +6,9 @@ import {
   Wifi,
   CreditCard,
   Droplets,
+  Car,
+  Music,
+  Heart,
   ArrowLeft,
   TrendingUp,
   CheckCircle2,
@@ -26,20 +29,20 @@ import { Bill, BillStatus, HistoryItem } from "./types";
 import { dbService } from "./services/db";
 
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
-  Aluguel: <Home className="size-6" />,
-  Energia: <Bolt className="size-6" />,
-  Internet: <Wifi className="size-6" />,
-  Cartão: <CreditCard className="size-6" />,
-  Água: <Droplets className="size-6" />,
+  Casa: <Home className="size-6" />,
+  Veiculo: <Car className="size-6" />,
+  Governo: <ReceiptText className="size-6" />,
+  Diversao: <Music className="size-6" />,
+  Cuidado: <Heart className="size-6" />,
   Outros: <ReceiptText className="size-6" />,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Aluguel: "bg-orange-100 text-orange-600",
-  Energia: "bg-blue-100 text-blue-600",
-  Internet: "bg-purple-100 text-purple-600",
-  Cartão: "bg-red-100 text-red-600",
-  Água: "bg-slate-100 text-slate-600",
+  Casa: "bg-orange-100 text-orange-600",
+  Veiculo: "bg-blue-100 text-blue-600",
+  Governo: "bg-purple-100 text-purple-600",
+  Diversao: "bg-red-100 text-red-600",
+  Cuidado: "bg-slate-100 text-slate-600",
   Outros: "bg-emerald-100 text-emerald-600",
 };
 
@@ -67,7 +70,7 @@ export default function App() {
     amount: "",
     dueDate: "",
     notes: "",
-    category: "Outros",
+    category: "Casa",
   });
 
   useEffect(() => {
@@ -103,7 +106,7 @@ export default function App() {
       amount: "",
       dueDate: "",
       notes: "",
-      category: "Outros",
+      category: "Casa",
     });
   };
 
@@ -411,13 +414,13 @@ export default function App() {
             {/* Floating Action Button */}
             <button
               onClick={() => setView("form")}
-              className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom))] right-6 flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-xl shadow-primary/40 active:scale-95 transition-transform z-20"
+              className="fixed bottom-[calc(7rem+var(--safe-bottom,0px))] right-6 flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-xl shadow-primary/40 active:scale-95 transition-transform z-20"
             >
               <Plus className="size-8" />
             </button>
 
             {/* Bottom Navigation Bar */}
-            <nav className="fixed bottom-0 left-0 right-0 z-10 flex border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-3">
+            <nav className="fixed bottom-0 left-0 right-0 z-10 flex border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 pb-[calc(2.25rem+var(--safe-bottom,0px))] pt-3">
               <button
                 onClick={() => setView("list")}
                 className={cn(
@@ -514,7 +517,7 @@ export default function App() {
             </main>
 
             {/* Bottom Navigation Bar */}
-            <nav className="fixed bottom-0 left-0 right-0 z-10 flex border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 pb-6 pt-3">
+            <nav className="fixed bottom-0 left-0 right-0 z-10 flex border-t border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-4 pb-[calc(2.25rem+var(--safe-bottom,0px))] pt-3">
               <button
                 onClick={() => setView("list")}
                 className={cn(
@@ -666,25 +669,7 @@ export default function App() {
                   />
                 </div>
 
-                {/* Description (Optional) */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    className="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal"
-                    htmlFor="notes"
-                  >
-                    Observações (Opcional)
-                  </label>
-                  <textarea
-                    className="flex w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 placeholder:text-slate-400 dark:placeholder:text-slate-500 p-4 text-base font-normal leading-normal transition-all"
-                    id="notes"
-                    placeholder="Adicione uma nota..."
-                    rows={3}
-                    value={formData.notes}
-                    onChange={(e) =>
-                      setFormData({ ...formData, notes: e.target.value })
-                    }
-                  />
-                </div>
+                {/* Observações removidas conforme solicitado */}
 
                 <button
                   type="submit"
